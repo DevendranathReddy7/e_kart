@@ -11,9 +11,7 @@ app.use(bodyParser.json());
 app.use("/signin", authRoutes);
 
 mongoose
-  .connect(
-    "mongodb+srv://devendraReddy:Me%40ekart7733@cluster-ekart.ggh4p.mongodb.net/e_kartDB?retryWrites=true&w=majority&appName=Cluster-ekart"
-  )
+  .connect(process.env.mongoURL)
   .then(() => {
     app.listen(PORT);
   })
