@@ -1,4 +1,5 @@
 const UserSchema = require("../models/userModel");
+const emailValidation = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 
 const signin = async (req, res) => {
   let existingUser = "";
@@ -7,6 +8,9 @@ const signin = async (req, res) => {
 
   if (email === "") {
     return res.status(400).json({ message: "Please enter an Email" });
+  }
+  if (!emailValidation.test(email)) {
+    return res.status(400).json({ message: "Please enter a valid Email" });
   }
   if (password === "") {
     return res.status(400).json({ message: "Please enter a Password" });
@@ -38,10 +42,13 @@ const signup = async (req, res) => {
   if (name === "" || email === "" || password === "") {
     return res.status(400).json({ message: "All fields are mandatory!" });
   }
+  if (!emailValidation.test(email)) {
+    return res.status(400).json({ message: "Please enter a valid Email" });
+  }
   if (password.length < 6) {
     return res
       .status(400)
-      .json({ message: "Password should be atleast 6 charecter length!" });
+      .json({ message: "Password should be atleast 6 character length!" });
   }
   try {
     existingUser = await UserSchema.findOne({ email });
