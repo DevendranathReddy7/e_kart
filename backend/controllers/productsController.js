@@ -5,7 +5,7 @@ const productSchema = require("../models/productsModels");
 // Multer storage setup
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, "uploads"); // Ensure the folder is accessible and created
+    cb(null, "uploads/"); // Ensure the folder is accessible and created
   },
   filename: (req, file, cb) => {
     cb(null, Date.now() + path.extname(file.originalname)); // Unique filename
@@ -15,10 +15,10 @@ const storage = multer.diskStorage({
 const upload = multer({ storage }); // Multer middleware for image upload
 
 const fieldValidations = (req, res) => {
-  const { title, description, sizesAvailable, sellerName } = req.body;
+  const { name, description, sizesAvailable, sellerName } = req.body;
 
-  if (!title || title.trim() === "") {
-    return res.status(400).json({ message: "Please provide a valid Title" });
+  if (!name || name.trim() === "") {
+    return res.status(400).json({ message: "Please provide a valid name" });
   }
   if (!description || description.trim() === "") {
     return res
@@ -36,7 +36,7 @@ const fieldValidations = (req, res) => {
 };
 
 const uploadProduct = async (req, res) => {
-  const { title, description, sizesAvailable, sellerName } = req.body;
+  const { name, description, sizesAvailable, sellerName } = req.body;
 
   if (!req.file) {
     return res.status(400).json({ message: "No image uploaded" });
@@ -45,7 +45,7 @@ const uploadProduct = async (req, res) => {
 
   try {
     const product = new productSchema({
-      title,
+      name,
       description,
       sellerName,
       sizesAvailable,
