@@ -52,11 +52,12 @@ const uploadProduct = async (req, res) => {
       imageUrl,
     });
     await product.save();
-    res
-      .status(201)
-      .json({ productDetails: product.toObject({ getters: true }) });
+    res.status(201).json({
+      productDetails: product.toObject({ getters: true }),
+      message: "Product added sucessfully!",
+    });
   } catch (error) {
-    res.status(500).json({ error: "Error saving product" });
+    res.status(500).json({ message: "Error saving product", error: error });
   }
 };
 
@@ -87,4 +88,37 @@ const removeProducts = async (req, res) => {
   }
 };
 
-module.exports = { addProducts, removeProducts, upload };
+const updateProducts = async (req, res) => {
+  fieldValidations(req, res);
+  const { name, description, sizesAvailable, sellerName, imageUrl } = req.body;
+  const { id } = req.params;
+
+  const existingProduct = await productSchema.findOne({ _id: id });
+
+  if (id && existingProduct) {
+    try {
+      await productSchema.findByIdAndUpdate(
+        { _id: id },
+        {
+          name,
+          description,
+          sellerName,
+          sizesAvailable,
+          imageUrl,
+        },
+        { new: true, runValidators: true }
+      );
+      res.status(201).json({
+        message: "Product updated sucessfully!",
+      });
+    } catch (error) {
+      res.status(500).json({ message: "Error updating product", error });
+    }
+  } else {
+    res.status(400).json({
+      message: "we couldn't find any product details with the provided id.",
+    });
+  }
+};
+
+module.exports = { addProducts, removeProducts, updateProducts, upload };

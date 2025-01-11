@@ -8,6 +8,12 @@ router.post(
   productsController.addProducts
 );
 
+router.post(
+  "/update/:id",
+  productsController.upload.single("image"),
+  productsController.updateProducts
+);
+
 router.delete("/remove/:id", productsController.removeProducts);
 
 module.exports = router;
