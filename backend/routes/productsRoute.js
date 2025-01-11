@@ -5,9 +5,9 @@ const productsController = require("../controllers/productsController");
 router.post(
   "/add",
   productsController.upload.single("image"),
-  productsController.addproducts
+  productsController.addProducts
 );
 
-router.delete("/remove", productsController.removeproducts);
+router.delete("/remove/:id", productsController.removeProducts);
 
 module.exports = router;

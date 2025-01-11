@@ -60,11 +60,31 @@ const uploadProduct = async (req, res) => {
   }
 };
 
-const addproducts = async (req, res) => {
+const addProducts = async (req, res) => {
   fieldValidations(req, res);
   uploadProduct(req, res);
 };
 
-const removeproducts = async () => {};
+const removeProducts = async (req, res) => {
+  const { id } = req.params;
 
-module.exports = { addproducts, removeproducts, upload };
+  if (id) {
+    try {
+      const product = await productSchema.findByIdAndDelete({ _id: id });
+
+      if (!product) {
+        return res.status(404).json({ message: "Product not found" });
+      }
+
+      return res.status(200).json({ message: "Product deleted successfully" });
+    } catch (error) {
+      return res
+        .status(500)
+        .json({ message: "Internal server error", error: error.message });
+    }
+  } else {
+    return res.status(400).json({ message: "Product ID is required" });
+  }
+};
+
+module.exports = { addProducts, removeProducts, upload };
