@@ -5,10 +5,10 @@ const productSchema = require("../models/productsModels");
 // Multer storage setup
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, "uploads/"); // Ensure the folder is accessible and created
+    cb(null, "uploads/");
   },
   filename: (req, file, cb) => {
-    cb(null, Date.now() + path.extname(file.originalname)); // Unique filename
+    cb(null, Date.now() + path.extname(file.originalname));
   },
 });
 
@@ -121,4 +121,21 @@ const updateProducts = async (req, res) => {
   }
 };
 
-module.exports = { addProducts, removeProducts, updateProducts, upload };
+const getProducts = async (req, res) => {
+  try {
+    const products = await productSchema.find();
+    res.status(200).json({ products });
+  } catch (error) {
+    res
+      .status(500)
+      .json({ message: "Something went wrong while fetching products", error });
+  }
+};
+
+module.exports = {
+  addProducts,
+  removeProducts,
+  updateProducts,
+  upload,
+  getProducts,
+};
