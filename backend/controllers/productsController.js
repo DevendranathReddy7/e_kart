@@ -68,8 +68,9 @@ const addProducts = async (req, res) => {
 
 const removeProducts = async (req, res) => {
   const { id } = req.params;
+  const existingProduct = await productSchema.findOne({ _id: id });
 
-  if (id) {
+  if (id && existingProduct) {
     try {
       const product = await productSchema.findByIdAndDelete({ _id: id });
 
@@ -84,7 +85,9 @@ const removeProducts = async (req, res) => {
         .json({ message: "Internal server error", error: error.message });
     }
   } else {
-    return res.status(400).json({ message: "Product ID is required" });
+    return res
+      .status(400)
+      .json({ message: "No Products found with the provided id!" });
   }
 };
 
